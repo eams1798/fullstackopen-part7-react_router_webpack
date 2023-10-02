@@ -1,41 +1,26 @@
 import { useState } from "react";
-import loginService from "../services/login";
-import blogService from "../services/blogs";
-import { IUser } from "../interfaces/user";
-import { INotification } from "../interfaces/notification";
-import { ErrorResponse } from "../interfaces/login";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setAxiosErrorMessage } from "../reducers/notification";
+import { AppThunkDispatch } from "../interfaces/reducers";
+import { login } from "../reducers/loginUser";
 
-interface ILoginProps {
-  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
-  setNotification: React.Dispatch<React.SetStateAction<INotification>>;
-}
-
-const LoginForm = ({ setUser, setNotification }: ILoginProps) => {
+const LoginForm = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const dispatch = useDispatch<AppThunkDispatch>();
+
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      blogService.setToken(user.token);
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-      setUser(user);
+      void dispatch(login({ username, password }));
       setUsername("");
       setPassword("");
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-        const errorResponse = axiosError.response?.data as ErrorResponse;
-        setNotification({
-          type: "error",
-          message: errorResponse.error,
-        });
+        dispatch(setAxiosErrorMessage(error));
       } else {
         console.log(error);
       }

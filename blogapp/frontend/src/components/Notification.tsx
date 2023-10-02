@@ -1,12 +1,12 @@
-import { useEffect } from "react";
 import { INotification } from "../interfaces/notification";
-interface INotiifProps {
-  objNotification: INotification;
-  setNotification: React.Dispatch<React.SetStateAction<INotification>>;
-}
+import { useSelector } from "react-redux";
+import { AppState } from "../interfaces/reducers";
+import { useEffect } from "react";
 
-const Notification = ({ objNotification, setNotification }: INotiifProps) => {
-  const textAndBorderColor = objNotification.type === "error" ? "red" : "green";
+const Notification = () => {
+  const notification = useSelector<AppState, INotification>((state) => state.notification);
+
+  const textAndBorderColor = notification.type === "error" ? "red" : "green";
   const styleNotif: object = {
     color: textAndBorderColor,
     background: "lightgrey",
@@ -19,22 +19,16 @@ const Notification = ({ objNotification, setNotification }: INotiifProps) => {
   };
 
   useEffect(() => {
-    if (objNotification.type !== null) {
-      setTimeout(() => {
-        setNotification({
-          type: null,
-          message: "",
-        });
-      }, 5000);
+    if (notification.message) {
+      window.scrollTo(0, 0);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [objNotification]);
+  }, [notification]);
 
-  return !objNotification.message ? (
+  return !notification.message ? (
     <></>
   ) : (
     <div id="notification" style={styleNotif}>
-      {objNotification.message}
+      {notification.message}
     </div>
   );
 };

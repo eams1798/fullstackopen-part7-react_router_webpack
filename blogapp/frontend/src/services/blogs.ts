@@ -1,11 +1,13 @@
 import axios from "axios";
 import { IBlog, UpdatableBlogParameters } from "../interfaces/blog";
+import storageService from "./storage";
 const baseUrl = "/api/blogs";
 
-let token = "";
-
-const setToken = (newToken: string) => {
-  token = `Bearer ${newToken}`;
+const config = {
+  headers: {
+    Authorization: storageService.getLoggedUser() ?
+      `Bearer ${storageService.getToken()}` : null
+  }
 };
 
 const getAll = async (): Promise<IBlog[]> => {
@@ -20,17 +22,7 @@ const getAll = async (): Promise<IBlog[]> => {
 };
 
 const create = async (newBlog: IBlog): Promise<IBlog> => {
-  const config = {
-    headers: {
-      Authorization: token,
-    },
-  };
   const { data }: { data: IBlog } = await axios.post(baseUrl, newBlog, config);
-  //data.user is returned as a string, but we need the user object
-  /* const blogUser = await userService.get(data.user || "");
-  if (blogUser) {
-    data.user = blogUser;
-  } */
 
   return data;
 };
@@ -39,30 +31,15 @@ const update = async (
   blogId: string,
   parameters: UpdatableBlogParameters,
 ): Promise<IBlog> => {
-  const config = {
-    headers: {
-      Authorization: token,
-    },
-  };
   const { data }: { data: IBlog } = await axios.put(
     `${baseUrl}/${blogId}`,
     parameters,
     config,
   );
-  //data.user is returned as a string, but we need the user object
-  /* const blogUser = await userService.get(data.user || "");
-  if (blogUser) {
-    data.user = blogUser;
-  } */
 
   return data;
 };
 const remove = async (blogId: string): Promise<void> => {
-  const config = {
-    headers: {
-      Authorization: token,
-    },
-  };
   await axios.delete(`${baseUrl}/${blogId}`, config);
 };
-export default { getAll, create, update, remove, setToken };
+export default { getAll, create, update, remove };

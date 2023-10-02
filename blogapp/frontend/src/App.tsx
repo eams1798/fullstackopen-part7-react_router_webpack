@@ -1,67 +1,46 @@
-import { useState, useEffect } from "react";
-import blogService from "./services/blogs";
-import { IBlog } from "./interfaces/blog";
-import { IUser } from "./interfaces/user";
+import { useEffect } from "react";
 import { loginResponse } from "./interfaces/login";
 import LoginForm from "./components/LoginForm";
 import UserInterface from "./components/UserInterface";
 import Notification from "./components/Notification";
-import { INotification } from "./interfaces/notification";
 import Togglable from "./components/Togglable";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState, AppThunkDispatch } from "./interfaces/reducers";
+import { initializeBlogs } from "./reducers/blogs";
+import { loadLoginUser } from "./reducers/loginUser";
 
 const App = () => {
-  const [blogs, setBlogs] = useState<IBlog[]>([]);
-  const [user, setUser] = useState<IUser | null>(null);
-  const [notification, setNotification] = useState<INotification>({
-    type: null,
-    message: "",
-  });
+  const dispatch = useDispatch<AppThunkDispatch>();
+
+  const user = useSelector<AppState, loginResponse | null>((state) => state.loginUser);
 
   useEffect(() => {
-    const getAllBlogs = async () => {
-      try {
-        const blogs = await blogService.getAll();
-        setBlogs(blogs.sort((a, b) => (b.likes || 0) - (a.likes || 0)));
-      } catch {
-        console.error;
-      }
-    };
-    void getAllBlogs();
+    try {
+      void dispatch(initializeBlogs());
+    } catch {
+      console.error;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const loggedUserJSON =
-      window.localStorage.getItem("loggedBlogAppUser") || "";
-    if (loggedUserJSON) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const user: loginResponse = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
+    dispatch(loadLoginUser());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div>
       <h2>Blogs</h2>
-      <Notification
-        objNotification={notification}
-        setNotification={setNotification}
-      />
+      <Notification />
       {!user ? (
         <Togglable openButtonLabel="Login" isVisible>
           <></>
-          <LoginForm setUser={setUser} setNotification={setNotification} />
+          <LoginForm />
         </Togglable>
       ) : (
         <></>
       )}
-      <UserInterface
-        blogs={blogs}
-        setBlogs={setBlogs}
-        user={user}
-        setUser={setUser}
-        setNotification={setNotification}
-      />
+      <UserInterface user={user} />
     </div>
   );
 };

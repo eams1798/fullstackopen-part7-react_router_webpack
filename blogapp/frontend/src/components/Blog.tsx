@@ -1,62 +1,32 @@
 import { IBlog } from "../interfaces/blog";
-import Togglable from "./Togglable";
-import blogService from "../services/blogs";
 import { IUser } from "../interfaces/user";
-import { INotification } from "../interfaces/notification";
-import axios, { AxiosError } from "axios";
-import { ErrorResponse } from "../interfaces/login";
+import { AppThunkDispatch } from "../interfaces/reducers";
+import { setNotification, setAxiosErrorMessage } from "../reducers/notification";
+import { likeBlog, removeBlog } from "../reducers/blogs";
+import { isAxiosError } from "axios";
+import { useDispatch } from "react-redux";
+import Togglable from "./Togglable";
 
 interface IBlogProps {
   id?: string;
   blog: IBlog;
-  setBlogs: React.Dispatch<React.SetStateAction<IBlog[]>>;
   user: IUser | null;
-  setNotification: React.Dispatch<React.SetStateAction<INotification>>;
 }
 
-const Blog = ({ id, blog, setBlogs, user, setNotification }: IBlogProps) => {
-  const like = async () => {
-    const updatedBlog = await blogService.update(blog.id || "", {
-      likes: (blog.likes || 0) + 1,
-    });
+const Blog = ({ id, blog, user }: IBlogProps) => {
 
-    setBlogs((blogs) => {
-      const currentBlogIndex = blogs.findIndex(
-        (blog) => blog.id === updatedBlog.id,
-      );
-      const newBlogList = [...blogs];
-      newBlogList.splice(currentBlogIndex, 1, updatedBlog);
+  const dispatch = useDispatch<AppThunkDispatch>();
 
-      return newBlogList;
-    });
-  };
-
-  const remove = async () => {
+  const remove = () => {
     try {
-      await blogService.remove(blog.id || "");
-      setBlogs((blogs) => {
-        const currentBlogIndex = blogs.findIndex(
-          (currBlog) => currBlog.id === blog.id,
-        );
-        const newBlogList = [...blogs];
-        newBlogList.splice(currentBlogIndex, 1);
-
-        return newBlogList;
-      });
-      setNotification({
+      void dispatch(removeBlog(blog));
+      dispatch(setNotification({
         type: "ok",
-        message: `Blog ${blog.title} by ${
-          blog.author || ""
-        } deleted succesfully`,
-      });
+        message: `Blog ${blog.title} by ${blog.author || ""} deleted succesfully`
+      }));
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-        const errorResponse = axiosError.response?.data as ErrorResponse;
-        setNotification({
-          type: "error",
-          message: errorResponse.error,
-        });
+      if (isAxiosError(error)) {
+        dispatch(setAxiosErrorMessage(error));
       } else {
         console.log(error);
       }
@@ -76,7 +46,7 @@ const Blog = ({ id, blog, setBlogs, user, setNotification }: IBlogProps) => {
             <li>
               Likes: {blog.likes}
               {user ? (
-                <button className="btn-like" onClick={() => void like()}>
+                <button className="btn-like" onClick={() => void dispatch(likeBlog(blog))}>
                   Like
                 </button>
               ) : (

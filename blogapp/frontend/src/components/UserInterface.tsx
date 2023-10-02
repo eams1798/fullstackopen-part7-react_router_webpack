@@ -1,40 +1,31 @@
-import React from "react";
 import { IBlog } from "../interfaces/blog";
 import BlogForm from "./BlogForm";
 import Blog from "./Blog";
-import { IUser } from "../interfaces/user";
-import { INotification } from "../interfaces/notification";
 import Togglable from "./Togglable";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState, AppThunkDispatch } from "../interfaces/reducers";
+import { loginResponse } from "../interfaces/login";
+import { logout } from "../reducers/loginUser";
 
 interface UIProps {
-  blogs: IBlog[];
-  setBlogs: React.Dispatch<React.SetStateAction<IBlog[]>>;
-  user: IUser | null;
-  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
-  setNotification: React.Dispatch<React.SetStateAction<INotification>>;
+  user: loginResponse | null;
 }
 
-const UserInterface = ({
-  blogs,
-  setBlogs,
-  user,
-  setUser,
-  setNotification,
-}: UIProps) => {
-  const logout = () => {
-    window.localStorage.clear();
-    setUser(null);
-  };
+const UserInterface = ({ user }: UIProps) => {
+  const blogs = useSelector<AppState, IBlog[]>((state) => [...state.blogs].sort(
+    (a, b) => b.likes! - a.likes!,
+  ));
+  const dispatch = useDispatch<AppThunkDispatch>();
 
   return (
     <div>
       {user ? (
         <>
           <p>{user.name} logged in</p>
-          <button onClick={logout}>Logout</button>
+          <button onClick={() => dispatch(logout())}>Logout</button>
           <Togglable openButtonLabel="New blog">
             <></>
-            <BlogForm setBlogs={setBlogs} setNotification={setNotification} />
+            <BlogForm />
           </Togglable>
         </>
       ) : (
@@ -45,9 +36,7 @@ const UserInterface = ({
           <Blog
             key={blog.id}
             blog={blog}
-            setBlogs={setBlogs}
             user={user}
-            setNotification={setNotification}
           />
         ))}
       </div>

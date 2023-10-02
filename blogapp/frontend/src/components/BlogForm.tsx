@@ -1,44 +1,36 @@
 import React, { useState } from "react";
-import { IBlog } from "../interfaces/blog";
-import blogService from "../services/blogs";
-import { INotification } from "../interfaces/notification";
-import axios, { AxiosError } from "axios";
-import { ErrorResponse } from "../interfaces/login";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { AppThunkDispatch } from "../interfaces/reducers";
+import { createBlog } from "../reducers/blogs";
+import { setNotification, setAxiosErrorMessage } from "../reducers/notification";
 
-interface IBlogFormProps {
-  setBlogs: React.Dispatch<React.SetStateAction<IBlog[]>>;
-  setNotification: React.Dispatch<React.SetStateAction<INotification>>;
-}
-
-const BlogForm = ({ setBlogs, setNotification }: IBlogFormProps) => {
+const BlogForm = () => {
   const [title, setTitle] = useState<string>("");
   const [url, setURL] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
   const [likes, setLikes] = useState<number>(0);
 
-  const addBlog = async (e: React.FormEvent) => {
+  const dispatch = useDispatch<AppThunkDispatch>();
+
+  const addBlog = (e: React.FormEvent) => {
     e.preventDefault();
     const blogObject = { title, url, author, likes };
 
     try {
-      const returnedBlog = await blogService.create(blogObject);
-      setNotification({
+      void dispatch(createBlog(blogObject));
+      dispatch(setNotification({
         type: "ok",
         message: `A new blog ${title} by ${author} added`,
-      });
-      setBlogs((blogs) => [returnedBlog, ...blogs]);
+      }));
+
       setTitle("");
       setAuthor("");
       setURL("");
       setLikes(0);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-        const errorResponse = axiosError.response?.data as ErrorResponse;
-        setNotification({
-          type: "error",
-          message: errorResponse.error,
-        });
+        dispatch(setAxiosErrorMessage(error));
       } else {
         console.log(error);
       }
