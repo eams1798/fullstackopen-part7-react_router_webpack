@@ -1,21 +1,23 @@
-import { useSelector } from "react-redux";
-import { AppState } from "../interfaces/reducers";
 import { IBlog } from "../interfaces/blog";
 import Togglable from "./Togglable";
 import BlogForm from "./BlogForm";
 import { Link } from "react-router-dom";
+import { loginResponse } from "../interfaces/login";
 
-const BlogList = () => {
-  const blogs = useSelector<AppState, IBlog[]>((state) => [...state.blogs].sort(
-    (a, b) => b.likes! - a.likes!,
-  ));
+interface IBlogListProps {
+  loginUser: loginResponse | null;
+  blogs: IBlog[];
+}
 
+const BlogList = ({ loginUser, blogs }: IBlogListProps) => {
   return (
     <div id="blog-list">
-      <Togglable openButtonLabel="New blog">
-        <></>
-        <BlogForm />
-      </Togglable>
+      {loginUser?
+        <Togglable openButtonLabel="New blog">
+          <></>
+          <BlogForm />
+        </Togglable>
+        : <></>}
       {blogs.map((blog) => (
         <div key={blog.id} id={blog.id} className="blog" >
           <h3 className="blog-title">

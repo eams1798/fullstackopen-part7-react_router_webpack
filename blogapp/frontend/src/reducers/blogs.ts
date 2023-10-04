@@ -2,7 +2,9 @@ import { PayloadAction, SliceCaseReducers, createSlice } from "@reduxjs/toolkit"
 import { IBlog } from "../interfaces/blog";
 import blogService from "../services/blogs";
 import { AppThunkDispatch } from "../interfaces/reducers";
-import { addBlogToUser } from "./users";
+import { addBlogToUser, removeBlogFromUser } from "./users";
+import { setAxiosErrorMessage, setNotification } from "./notification";
+import { isAxiosError } from "axios";
 
 const blogSlice = createSlice<IBlog[], SliceCaseReducers<IBlog[]>, string>({
   name: "blogs",
@@ -38,9 +40,21 @@ export const initializeBlogs = () => async (dispatch: AppThunkDispatch) => {
 };
 
 export const createBlog = (blog: IBlog) => async (dispatch: AppThunkDispatch) => {
-  const newBlog = await blogService.create(blog);
-  dispatch(addBlog(newBlog));
-  dispatch(addBlogToUser({ id: newBlog.user!.id!, blog: newBlog }));
+  try {
+    const newBlog = await blogService.create(blog);
+    dispatch(addBlog(newBlog));
+    dispatch(addBlogToUser({ id: newBlog.user!.id!, blog: newBlog }));
+    dispatch(setNotification({
+      type: "ok",
+      message: `A new blog ${newBlog.title} by ${newBlog.author} added`,
+    }));
+  } catch (error) {
+    if (isAxiosError(error)) {
+      dispatch(setAxiosErrorMessage(error));
+    } else {
+      console.log(error);
+    }
+  }
 };
 
 export const likeBlog = (blog: IBlog) => async (dispatch: AppThunkDispatch) => {
@@ -51,8 +65,21 @@ export const likeBlog = (blog: IBlog) => async (dispatch: AppThunkDispatch) => {
 };
 
 export const removeBlog = (blog: IBlog) => async (dispatch: AppThunkDispatch) => {
-  await blogService.remove(blog.id!);
-  dispatch(removeBlogById(blog.id!));
+  try {
+    await blogService.remove(blog.id!);
+    dispatch(removeBlogById(blog.id!));
+    dispatch(removeBlogFromUser({ id: blog.user!.id!, blogId: blog.id! }));
+    dispatch(setNotification({
+      type: "ok",
+      message: `Blog ${blog.title} by ${blog.author || ""} deleted succesfully`
+    }));
+  } catch (error) {
+    if (isAxiosError(error)) {
+      dispatch(setAxiosErrorMessage(error));
+    } else {
+      console.log(error);
+    }
+  }
 };
 
 export default blogSlice.reducer;

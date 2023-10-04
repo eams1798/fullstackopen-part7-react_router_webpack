@@ -39,7 +39,7 @@ export const setAxiosErrorMessage = (error: AxiosError) => (dispatch: AppThunkDi
   dispatch(setAxiosError(error));
   setTimeout(() => {
     dispatch(setCurrentNotification({ message: "", type: null }));
-  });
+  }, 5000);
 };
 
 export default notificationSlice.reducer;

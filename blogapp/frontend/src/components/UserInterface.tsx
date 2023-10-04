@@ -18,7 +18,9 @@ interface UIProps {
 }
 
 const UserInterface = ({ loginUser }: UIProps) => {
-  const blogs = useSelector<AppState, IBlog[]>((state) => [...state.blogs]);
+  const blogs = useSelector<AppState, IBlog[]>((state) => [...state.blogs].sort(
+    (a, b) => b.likes! - a.likes!,
+  ));
   const users = useSelector<AppState, IUser[]>((state) => [...state.users]);
 
   const blogMatch = useMatch("/blogs/:id");
@@ -31,13 +33,13 @@ const UserInterface = ({ loginUser }: UIProps) => {
       <Menu user={loginUser}/>
       <h2>Blog app</h2>
       <Routes>
-        <Route path="/" element={<BlogList />} />
+        <Route path="/" element={<BlogList loginUser={loginUser} blogs={blogs} />} />
         <Route path="/blogs/:id" element={
           blog?
-            <Blog key={blog.id} blog={blog} user={user!} /> :
+            <Blog key={blog.id} blog={blog} loginUser={loginUser} /> :
             <NotFound />
         } />
-        <Route path="/users" element={<UserList />} />
+        <Route path="/users" element={<UserList users={users} />} />
         <Route path="/users/:id" element={
           user?
             <User key={user.id} user={user} /> :

@@ -1,39 +1,25 @@
 import { IBlog } from "../interfaces/blog";
-import { IUser } from "../interfaces/user";
 import { AppThunkDispatch } from "../interfaces/reducers";
-import { setNotification, setAxiosErrorMessage } from "../reducers/notification";
 import { likeBlog, removeBlog } from "../reducers/blogs";
-import { isAxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./styles/Blog.css";
+import { loginResponse } from "../interfaces/login";
 
 interface IBlogProps {
   id?: string;
   blog: IBlog;
-  user: IUser | null;
+  loginUser: loginResponse | null;
 }
 
-const Blog = ({ id, blog, user }: IBlogProps) => {
+const Blog = ({ id, blog, loginUser }: IBlogProps) => {
 
   const dispatch = useDispatch<AppThunkDispatch>();
   const navigate = useNavigate();
 
   const remove = () => {
-    try {
-      navigate("/");
-      void dispatch(removeBlog(blog));
-      dispatch(setNotification({
-        type: "ok",
-        message: `Blog ${blog.title} by ${blog.author || ""} deleted succesfully`
-      }));
-    } catch (error) {
-      if (isAxiosError(error)) {
-        dispatch(setAxiosErrorMessage(error));
-      } else {
-        console.log(error);
-      }
-    }
+    navigate("/");
+    void dispatch(removeBlog(blog));
   };
   return (
     <div id={id} className="blog">
@@ -43,14 +29,14 @@ const Blog = ({ id, blog, user }: IBlogProps) => {
         <li>URL: {blog.url}</li>
         <li>
           Likes: {blog.likes}
-          {user ? (
+          {loginUser ? (
             <button className="btn-like" onClick={() => void dispatch(likeBlog(blog))}>
               Like
             </button>
           ) : (
             <></>
           )}
-          {blog.user?.username === user?.username ? (
+          {blog.user?.username === loginUser?.username ? (
             <button className="btn-delete" onClick={() => void remove()}>
               Delete
             </button>

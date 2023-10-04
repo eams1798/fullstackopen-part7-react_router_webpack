@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { AppThunkDispatch } from "../interfaces/reducers";
 import { createBlog } from "../reducers/blogs";
-import { setNotification, setAxiosErrorMessage } from "../reducers/notification";
 
 const BlogForm = () => {
   const [title, setTitle] = useState<string>("");
@@ -17,24 +15,13 @@ const BlogForm = () => {
     e.preventDefault();
     const blogObject = { title, url, author, likes };
 
-    try {
-      void dispatch(createBlog(blogObject));
-      dispatch(setNotification({
-        type: "ok",
-        message: `A new blog ${title} by ${author} added`,
-      }));
+    void dispatch(createBlog(blogObject));
 
-      setTitle("");
-      setAuthor("");
-      setURL("");
-      setLikes(0);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        dispatch(setAxiosErrorMessage(error));
-      } else {
-        console.log(error);
-      }
-    }
+    setTitle("");
+    setAuthor("");
+    setURL("");
+    setLikes(0);
+
   };
 
   const handleFieldChange = (

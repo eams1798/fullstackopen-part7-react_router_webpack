@@ -1,10 +1,11 @@
-import { useSelector } from "react-redux";
-import { AppState } from "../interfaces/reducers";
 import { IUser } from "../interfaces/user";
 import { Link } from "react-router-dom";
 
-const UserList = () => {
-  const users = useSelector<AppState, IUser[]>((state) => [...state.users]);
+interface IUserListProps {
+  users: IUser[];
+}
+
+const UserList = ({ users }: IUserListProps) => {
   return (
     <div>
       <h2>Users</h2>

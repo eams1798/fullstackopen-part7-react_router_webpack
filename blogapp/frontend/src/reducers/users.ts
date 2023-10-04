@@ -28,10 +28,15 @@ const usersSlice = createSlice<IUser[], SliceCaseReducers<IUser[]>>({
     removeUser: (state: IUser[], action: PayloadAction<IUser>) => {
       return state.filter((user) => user.id !== action.payload.id);
     },
+    removeBlogFromUser: (state: IUser[], action: PayloadAction<{id: string, blogId: string}>) => {
+      const index = state.findIndex((user) => user.id === action.payload.id);
+      const blogIndex = state[index].blogs!.findIndex((blog) => blog.id === action.payload.blogId);
+      state[index].blogs!.splice(blogIndex, 1);
+    }
   },
 });
 
-export const { setUsers, addUser, updateUser, addBlogToUser, removeUser } = usersSlice.actions;
+export const { setUsers, addUser, updateUser, addBlogToUser, removeUser, removeBlogFromUser } = usersSlice.actions;
 
 export const loadUsers = () => async (dispatch: AppThunkDispatch) => {
   const users = await userService.getAll();
