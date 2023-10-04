@@ -8,6 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppState, AppThunkDispatch } from "./interfaces/reducers";
 import { initializeBlogs } from "./reducers/blogs";
 import { loadLoginUser } from "./reducers/loginUser";
+import "./App.css";
+import { loadUsers } from "./reducers/users";
+import { isAxiosError } from "axios";
+import { setAxiosErrorMessage } from "./reducers/notification";
 
 const App = () => {
   const dispatch = useDispatch<AppThunkDispatch>();
@@ -17,8 +21,13 @@ const App = () => {
   useEffect(() => {
     try {
       void dispatch(initializeBlogs());
-    } catch {
-      console.error;
+      void dispatch(loadUsers());
+    } catch (error) {
+      if (isAxiosError(error)) {
+        dispatch(setAxiosErrorMessage(error));
+      } else {
+        console.log(error);
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -30,7 +39,6 @@ const App = () => {
 
   return (
     <div>
-      <h2>Blogs</h2>
       <Notification />
       {!user ? (
         <Togglable openButtonLabel="Login" isVisible>
@@ -40,7 +48,7 @@ const App = () => {
       ) : (
         <></>
       )}
-      <UserInterface user={user} />
+      <UserInterface loginUser={user} />
     </div>
   );
 };

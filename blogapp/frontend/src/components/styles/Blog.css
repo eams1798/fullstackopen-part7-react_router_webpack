@@ -1,0 +1,16 @@
+.blog {
+    border: 1px solid #2a2a2a;
+    margin: 1rem;
+}
+
+.blog-title {
+    margin: 1rem;
+}
+
+.blog .togglable-container > div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0 1rem;
+}

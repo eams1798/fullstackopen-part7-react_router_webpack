@@ -3,12 +3,12 @@ import { IBlog, UpdatableBlogParameters } from "../interfaces/blog";
 import storageService from "./storage";
 const baseUrl = "/api/blogs";
 
-const config = {
+const config = () => ({
   headers: {
     Authorization: storageService.getLoggedUser() ?
       `Bearer ${storageService.getToken()}` : null
   }
-};
+});
 
 const getAll = async (): Promise<IBlog[]> => {
   console.log(`connecting to ${baseUrl}`);
@@ -22,7 +22,7 @@ const getAll = async (): Promise<IBlog[]> => {
 };
 
 const create = async (newBlog: IBlog): Promise<IBlog> => {
-  const { data }: { data: IBlog } = await axios.post(baseUrl, newBlog, config);
+  const { data }: { data: IBlog } = await axios.post(baseUrl, newBlog, config());
 
   return data;
 };
@@ -34,12 +34,12 @@ const update = async (
   const { data }: { data: IBlog } = await axios.put(
     `${baseUrl}/${blogId}`,
     parameters,
-    config,
+    config(),
   );
 
   return data;
 };
 const remove = async (blogId: string): Promise<void> => {
-  await axios.delete(`${baseUrl}/${blogId}`, config);
+  await axios.delete(`${baseUrl}/${blogId}`, config());
 };
 export default { getAll, create, update, remove };

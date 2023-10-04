@@ -21,7 +21,7 @@ const getToken = (): string => {
 };
 
 const removeLoggedUser = () => {
-  window.localStorage.removeItem(KEY);
+  window.localStorage.clear();
 };
 
 export default {

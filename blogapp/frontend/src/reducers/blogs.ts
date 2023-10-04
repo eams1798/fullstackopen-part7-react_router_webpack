@@ -2,6 +2,7 @@ import { PayloadAction, SliceCaseReducers, createSlice } from "@reduxjs/toolkit"
 import { IBlog } from "../interfaces/blog";
 import blogService from "../services/blogs";
 import { AppThunkDispatch } from "../interfaces/reducers";
+import { addBlogToUser } from "./users";
 
 const blogSlice = createSlice<IBlog[], SliceCaseReducers<IBlog[]>, string>({
   name: "blogs",
@@ -39,6 +40,7 @@ export const initializeBlogs = () => async (dispatch: AppThunkDispatch) => {
 export const createBlog = (blog: IBlog) => async (dispatch: AppThunkDispatch) => {
   const newBlog = await blogService.create(blog);
   dispatch(addBlog(newBlog));
+  dispatch(addBlogToUser({ id: newBlog.user!.id!, blog: newBlog }));
 };
 
 export const likeBlog = (blog: IBlog) => async (dispatch: AppThunkDispatch) => {

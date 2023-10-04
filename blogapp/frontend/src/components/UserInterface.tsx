@@ -1,45 +1,50 @@
-import { IBlog } from "../interfaces/blog";
-import BlogForm from "./BlogForm";
-import Blog from "./Blog";
-import Togglable from "./Togglable";
-import { useDispatch, useSelector } from "react-redux";
-import { AppState, AppThunkDispatch } from "../interfaces/reducers";
 import { loginResponse } from "../interfaces/login";
-import { logout } from "../reducers/loginUser";
+import "./styles/UserInterface.css";
+import Menu from "./Menu";
+import { Route, Routes } from "react-router-dom";
+import BlogList from "./BlogList";
+import UserList from "./UserList";
+import Blog from "./Blog";
+import { useMatch } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { AppState } from "../interfaces/reducers";
+import { IBlog } from "../interfaces/blog";
+import { IUser } from "../interfaces/user";
+import User from "./User";
+import NotFound from "./NotFound";
 
 interface UIProps {
-  user: loginResponse | null;
+  loginUser: loginResponse | null;
 }
 
-const UserInterface = ({ user }: UIProps) => {
-  const blogs = useSelector<AppState, IBlog[]>((state) => [...state.blogs].sort(
-    (a, b) => b.likes! - a.likes!,
-  ));
-  const dispatch = useDispatch<AppThunkDispatch>();
+const UserInterface = ({ loginUser }: UIProps) => {
+  const blogs = useSelector<AppState, IBlog[]>((state) => [...state.blogs]);
+  const users = useSelector<AppState, IUser[]>((state) => [...state.users]);
 
+  const blogMatch = useMatch("/blogs/:id");
+  const blog = blogMatch ? blogs.find((blog) => blog.id === blogMatch.params.id) : null;
+
+  const userMatch = useMatch("/users/:id");
+  const user = userMatch ? users.find((user) => user.id === userMatch.params.id) : null;
   return (
     <div>
-      {user ? (
-        <>
-          <p>{user.name} logged in</p>
-          <button onClick={() => dispatch(logout())}>Logout</button>
-          <Togglable openButtonLabel="New blog">
-            <></>
-            <BlogForm />
-          </Togglable>
-        </>
-      ) : (
-        <></>
-      )}
-      <div id="blog-list">
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            user={user}
-          />
-        ))}
-      </div>
+      <Menu user={loginUser}/>
+      <h2>Blog app</h2>
+      <Routes>
+        <Route path="/" element={<BlogList />} />
+        <Route path="/blogs/:id" element={
+          blog?
+            <Blog key={blog.id} blog={blog} user={user!} /> :
+            <NotFound />
+        } />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/users/:id" element={
+          user?
+            <User key={user.id} user={user} /> :
+            <NotFound />
+        } />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </div>
   );
 };

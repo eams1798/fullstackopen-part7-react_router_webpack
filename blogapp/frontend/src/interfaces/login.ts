@@ -1,5 +1,3 @@
-import { IUser } from "./user";
-
 export interface loginCredentials {
   username: string;
   password: string;
@@ -11,7 +9,10 @@ export interface signUpCredentials {
   password: string;
 }
 
-export interface loginResponse extends IUser {
+export interface loginResponse {
+  username: string;
+  name: string;
+  id?: string;
   token: string;
 }
 
