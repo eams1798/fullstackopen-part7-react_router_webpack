@@ -1,3 +1,4 @@
+import { IComment } from "./comment";
 import { IUser } from "./user";
 
 export interface IBlog {
@@ -7,6 +8,7 @@ export interface IBlog {
   likes?: number;
   user?: IUser;
   id?: string;
+  comments?: IComment[];
 }
 
 export interface UpdatableBlogParameters {
@@ -14,4 +16,5 @@ export interface UpdatableBlogParameters {
   author?: string;
   url?: string;
   likes?: number;
+  comments?: IComment[];
 }

@@ -7,6 +7,7 @@ export interface IBlog {
   url: string,
   likes: number,
   user: Types.ObjectId | string
+  comments: Types.ObjectId[]
 }
 
 export interface IFavBlog {

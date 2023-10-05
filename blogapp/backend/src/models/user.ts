@@ -12,6 +12,12 @@ const userSchema = new Schema<IUser>({
       ref: "Blog"
     }
   ],
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment"
+    }
+  ]
 });
 
 userSchema.plugin(uniqueValidator);

@@ -7,6 +7,7 @@ export interface UserDocument extends Document {
   passwordHash: string,
   id?: string,
   blogs: Types.ObjectId[]
+  comments: Types.ObjectId[]
 }
 
 export interface Request extends ExpressRequest {

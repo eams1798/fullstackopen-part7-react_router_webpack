@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 import User from "../models/user";
+import Comment from "../models/comment";
 import "express-async-errors";
 
 const usersRouter = express.Router();
@@ -26,6 +27,13 @@ usersRouter.get("/:id", async (req: Request, res: Response, next: NextFunction) 
   } else {
     next();
   }
+});
+
+usersRouter.get("/:id/comments", async (req: Request, res: Response) => {
+  const comments = await Comment
+    .find({ user: req.params.id })
+    .populate("blog", { title: 1, author: 1 });
+  res.json(comments.map(comment => comment.toJSON()));
 });
 
 usersRouter.post("/", async (req: Request, res: Response) => {

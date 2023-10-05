@@ -21,7 +21,13 @@ const blogSchema = new Schema<IBlog>({
   user: {
     type: Schema.Types.ObjectId,
     ref: "User"
-  }
+  },
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment"
+    }
+  ]
 });
 
 blogSchema.plugin(uniqueValidator);

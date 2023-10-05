@@ -4,6 +4,7 @@ import cors from "cors";
 import blogsRouter from "./controllers/blogs";
 import usersRouter from "./controllers/users";
 import loginRouter from "./controllers/login";
+import commentsRouter from "./controllers/comments";
 import testingRouter from "./controllers/testing";
 import middleware from "./utils/middleware";
 import logger from "./utils/logger";
@@ -27,6 +28,7 @@ const startApp = async () => {
     app.use("/api/login", loginRouter);
     app.use("/api/users", usersRouter);
     app.use("/api/blogs", blogsRouter);
+    app.use("/api/comments", commentsRouter);
     if (process.env.NODE_ENV === "test") {
       app.use("/api/testing", testingRouter);
     }
