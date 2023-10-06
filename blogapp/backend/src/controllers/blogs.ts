@@ -92,7 +92,8 @@ blogRouter.post("/:id/comments/asAnonymous", async (request: Request, response: 
   blog.comments = blog.comments.concat(comment._id);
   await blog.save();
 
-  response.status(201).json(savedComment.toJSON());
+  const returnedComment = await savedComment.populate("blog", { title: 1, author: 1 });
+  response.status(201).json(returnedComment.toJSON());
 });
 
 blogRouter.post("/:id/comments/", middleware.userExtractor, async (request: Request, response: Response) => {
@@ -132,7 +133,9 @@ blogRouter.post("/:id/comments/", middleware.userExtractor, async (request: Requ
   blog.comments = blog.comments.concat(comment._id);
   await blog.save();
 
-  const returnedComment = await savedComment.populate("user", { username: 1, name: 1 });
+  let returnedComment = await savedComment
+    .populate("user", { username: 1, name: 1 });
+  returnedComment = await returnedComment.populate("blog", { title: 1, author: 1 });
   response.status(201).json(returnedComment.toJSON());
 });
 

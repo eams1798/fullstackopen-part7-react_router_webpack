@@ -3,6 +3,7 @@ import { loginResponse } from "../interfaces/login";
 import { useDispatch } from "react-redux";
 import { AppThunkDispatch } from "../interfaces/reducers";
 import { logout } from "../reducers/loginUser";
+import "./styles/Menu.css";
 
 interface IMenuProps {
   user: loginResponse | null
@@ -12,8 +13,8 @@ const Menu = ({ user }: IMenuProps) => {
 
   return (
     <div className="menu">
-      <Link to="/">Blogs</Link>
-      <Link to="/users">Users</Link>
+      <Link to="/"><div className="Navigate-button">Blogs</div></Link>
+      <Link to="/users"><div className="Navigate-button">Users</div></Link>
       {user ? (
         <>
           <div className="login-info">

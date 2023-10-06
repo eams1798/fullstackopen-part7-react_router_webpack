@@ -1,10 +1,11 @@
 import { IBlog } from "../interfaces/blog";
 import { AppThunkDispatch } from "../interfaces/reducers";
-import { likeBlog, removeBlog } from "../reducers/blogs";
+import { likeBlog } from "../reducers/blogs";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import "./styles/Blog.css";
 import { loginResponse } from "../interfaces/login";
+import DeleteBlogBtn from "./DeleteBlogBtn";
+import Comments from "./Comments";
 
 interface IBlogProps {
   id?: string;
@@ -15,16 +16,14 @@ interface IBlogProps {
 const Blog = ({ id, blog, loginUser }: IBlogProps) => {
 
   const dispatch = useDispatch<AppThunkDispatch>();
-  const navigate = useNavigate();
 
-  const remove = () => {
-    navigate("/");
-    void dispatch(removeBlog(blog));
-  };
   return (
     <div id={id} className="blog">
       <ul className="blog-content">
-        <h3>{blog.title}</h3>
+        <div className="blog-title-container">
+          <h3>{blog.title}</h3>
+          <DeleteBlogBtn blog={blog} loginUser={loginUser} />
+        </div>
         <li>Author: {blog.author}</li>
         <li>URL: {blog.url}</li>
         <li>
@@ -36,15 +35,9 @@ const Blog = ({ id, blog, loginUser }: IBlogProps) => {
           ) : (
             <></>
           )}
-          {blog.user?.username === loginUser?.username ? (
-            <button className="btn-delete" onClick={() => void remove()}>
-              Delete
-            </button>
-          ) : (
-            <></>
-          )}
         </li>
       </ul>
+      <Comments blogId={blog.id!} loginUser={loginUser} comments={blog.comments!}/>
     </div>
   );
 };

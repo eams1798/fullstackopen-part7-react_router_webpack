@@ -1,16 +1,22 @@
 .blog {
-    border: 1px solid #2a2a2a;
+    border: 1px solid rgb(168, 173, 255);
     margin: 1rem;
 }
 
 .blog-title {
     margin: 1rem;
 }
+.blog .togglable-container > div, .blog-title-container {
+    margin: 0 1rem;
+}
 
-.blog .togglable-container > div {
+.blog .togglable-container > div, .blog-title-container, .blog-title {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    margin: 0 1rem;
+}
+
+.blog-title-container, .blog-title {
+    justify-content: space-between;
 }

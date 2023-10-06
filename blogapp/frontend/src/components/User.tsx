@@ -2,6 +2,14 @@ import { Link } from "react-router-dom";
 import { IUser } from "../interfaces/user";
 
 const User = ({ user }: { user: IUser }) => {
+  if (user.blogs?.length === 0) {
+    return (
+      <div>
+        <h2>{user.name}</h2>
+        <h3>No blogs</h3>
+      </div>
+    );
+  }
   return (
     <div>
       <h2>{user.name}</h2>

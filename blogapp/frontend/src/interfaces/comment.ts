@@ -2,8 +2,8 @@ import { IBlog } from "./blog";
 import { IUser } from "./user";
 
 export interface IComment {
-  id: string;
+  id?: string;
   content: string;
-  blog: IBlog;
-  user?: IUser;
+  blog: IBlog | string;
+  user?: IUser | string;
 }
