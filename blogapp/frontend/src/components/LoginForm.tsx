@@ -1,11 +1,16 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { useRef, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAxiosErrorMessage } from "../reducers/notification";
 import { AppThunkDispatch } from "../interfaces/reducers";
 import { login } from "../reducers/loginUser";
+import { Form, Button } from "react-bootstrap";
+import Togglable from "./Togglable";
+import "./styles/LoginForm.css";
 
-const LoginForm = () => {
+const LoginForm = ({ toggleVisibility }: { toggleVisibility: () => void}) => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -28,36 +33,43 @@ const LoginForm = () => {
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        void handleLogin(e);
-      }}
-    >
-      <div>
-        <label htmlFor="username">Username</label>
-        <input
+    <Form className="login-form bg-light" onSubmit={(e) => { e.preventDefault(); handleLogin(e); }}>
+      <Form.Group controlId="formUsername">
+        <Form.Label>Username</Form.Label>
+        <Form.Control
           type="text"
-          id="username"
           value={username}
-          name="username"
           onChange={({ target }) => setUsername(target.value)}
         />
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input
+      </Form.Group>
+      <Form.Group controlId="formPassword">
+        <Form.Label>Password</Form.Label>
+        <Form.Control
           type="password"
-          id="password"
           value={password}
-          name="password"
           onChange={({ target }) => setPassword(target.value)}
         />
+      </Form.Group>
+      <div className="form-buttons d-flex justify-content-evenly">
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
+        <Button variant="primary" onClick={() => toggleVisibility()}>Cancel</Button>
       </div>
-      <button id="btn-login" type="submit">
-        login
-      </button>
-    </form>
+    </Form>
   );
 };
 
-export default LoginForm;
+const Login = () => {
+  const togglableRef = useRef<typeof Togglable>(null);
+  return (
+    <Togglable openButtonLabel="Login" closeButtonLabel="_nobutton" ref={togglableRef}>
+      <></>
+      <div className="responsive-controller">
+        <LoginForm toggleVisibility={() => togglableRef.current!.toggleVisibility()} />
+      </div>
+    </Togglable>
+  );
+};
+
+export default Login;

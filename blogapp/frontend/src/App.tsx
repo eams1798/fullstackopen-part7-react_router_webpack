@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { loginResponse } from "./interfaces/login";
-import LoginForm from "./components/LoginForm";
 import UserInterface from "./components/UserInterface";
 import Notification from "./components/Notification";
-import Togglable from "./components/Togglable";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState, AppThunkDispatch } from "./interfaces/reducers";
 import { initializeBlogs } from "./reducers/blogs";
@@ -12,6 +10,7 @@ import "./App.css";
 import { loadUsers } from "./reducers/users";
 import { isAxiosError } from "axios";
 import { setAxiosErrorMessage } from "./reducers/notification";
+import { Container } from "react-bootstrap";
 
 const App = () => {
   const dispatch = useDispatch<AppThunkDispatch>();
@@ -38,18 +37,10 @@ const App = () => {
   }, []);
 
   return (
-    <div>
+    <Container>
       <Notification />
-      {!user ? (
-        <Togglable openButtonLabel="Login" isVisible>
-          <></>
-          <LoginForm />
-        </Togglable>
-      ) : (
-        <></>
-      )}
       <UserInterface loginUser={user} />
-    </div>
+    </Container>
   );
 };
 

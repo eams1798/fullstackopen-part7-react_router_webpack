@@ -36,14 +36,14 @@ const Comments = ({ blogId, loginUser, comments }: ICommentsProps) => {
   }, [blogId, comments]);
 
   return (
-    <div className="blog-comments">
+    <div className="blog-comments container">
       <CommentForm blogId={blogId} loginUser={loginUser} />
       {comments.length > 0?
         <>
           <h2>Comments</h2>
           <ul>
             {comments.map((comment) => (
-              <li key={comment.id} className="comment">
+              <li key={comment.id} className="comment-li border border-secondary-subtle container py-2">
                 <Comment
                   blogId={blogId}
                   comment={comment}

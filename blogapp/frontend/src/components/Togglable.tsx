@@ -1,6 +1,8 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
+import { Button, Collapse, Container } from "react-bootstrap";
 
 interface TogglableProps {
+  className?: string;
   openButtonLabel: string;
   closeButtonLabel?: string;
   children: JSX.Element[];
@@ -9,13 +11,10 @@ interface TogglableProps {
 
 const Togglable = forwardRef(
   (
-    { openButtonLabel, closeButtonLabel, children, isVisible }: TogglableProps,
+    { className, openButtonLabel, closeButtonLabel, children, isVisible }: TogglableProps,
     refs,
   ) => {
     const [visible, setVisible] = useState(isVisible || false);
-
-    const hideWhenVisible = { display: visible ? "none" : "" };
-    const showWhenVisible = { display: visible ? "" : "none" };
 
     const [componentOnHide, componentOnShow] = children;
 
@@ -30,20 +29,32 @@ const Togglable = forwardRef(
     });
 
     return (
-      <div className="togglable-container">
-        <div style={hideWhenVisible}>
-          {componentOnHide}
-          <button className="btn-show" onClick={toggleVisibility}>
+      <Container className={`${className} togglable-container`}>
+        <Collapse in={visible}>
+          <div id="example-collapse-text">
+            {visible ? componentOnShow : componentOnHide}
+          </div>
+        </Collapse>
+        { visible && closeButtonLabel !== "_nobutton" ?
+          <Button
+            onClick={toggleVisibility}
+            aria-controls="example-collapse-text"
+            aria-expanded={visible}
+          >
+            {visible ? (closeButtonLabel ? closeButtonLabel : "Cancel") : openButtonLabel}
+          </Button>:
+          <></>
+        }
+        { !visible && openButtonLabel !== "_nobutton" ?
+          <Button
+            onClick={toggleVisibility}
+            aria-controls="example-collapse-text"
+            aria-expanded={visible}
+          >
             {openButtonLabel}
-          </button>
-        </div>
-        <div style={showWhenVisible}>
-          {componentOnShow}
-          <button className="btn-hide" onClick={toggleVisibility}>
-            {closeButtonLabel ? closeButtonLabel : "Cancel"}
-          </button>
-        </div>
-      </div>
+          </Button>
+          : <></>}
+      </Container>
     );
   },
 );

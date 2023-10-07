@@ -29,9 +29,10 @@ const UserInterface = ({ loginUser }: UIProps) => {
   const userMatch = useMatch("/users/:id");
   const user = userMatch ? users.find((user) => user.id === userMatch.params.id) : null;
   return (
-    <div>
-      <Menu user={loginUser}/>
-      <h2>Blog app</h2>
+    <div className="user-interface d-flex flex-column">
+      <div className="container fixed-top menu-container">
+        <Menu user={loginUser}/>
+      </div>
       <Routes>
         <Route path="/" element={<BlogList loginUser={loginUser} blogs={blogs} />} />
         <Route path="/blogs/:id" element={

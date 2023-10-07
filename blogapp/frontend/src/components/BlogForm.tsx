@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppThunkDispatch } from "../interfaces/reducers";
 import { createBlog } from "../reducers/blogs";
+import { Form, Button } from "react-bootstrap";
 
-const BlogForm = () => {
+const BlogForm = ({ toggleVisibility }: { toggleVisibility: () => void}) => {
   const [title, setTitle] = useState<string>("");
   const [url, setURL] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
@@ -35,56 +36,46 @@ const BlogForm = () => {
   };
 
   return (
-    <form
-      id="form-addBlog"
-      onSubmit={(e) => {
-        void addBlog(e);
-      }}
-    >
-      <div className="form-field">
-        <label htmlFor="title">Title</label>
-        <input
+    <Form id="form-addBlog" onSubmit={(e) => { e.preventDefault(); addBlog(e); }}>
+      <Form.Group controlId="formTitle">
+        <Form.Label>Title</Form.Label>
+        <Form.Control
           type="text"
-          id="title"
-          name="title"
           value={title}
-          onChange={(e) => handleFieldChange(e, "title")}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e, "title")}
         />
-      </div>
-      <div className="form-field">
-        <label htmlFor="author">Author</label>
-        <input
+      </Form.Group>
+      <Form.Group controlId="formAuthor">
+        <Form.Label>Author</Form.Label>
+        <Form.Control
           type="text"
-          id="author"
-          name="author"
           value={author}
-          onChange={(e) => handleFieldChange(e, "author")}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e, "author")}
         />
-      </div>
-      <div className="form-field">
-        <label htmlFor="url">Url</label>
-        <input
+      </Form.Group>
+      <Form.Group controlId="formURL">
+        <Form.Label>URL</Form.Label>
+        <Form.Control
           type="text"
-          id="url"
-          name="url"
           value={url}
-          onChange={(e) => handleFieldChange(e, "url")}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e, "url")}
         />
-      </div>
-      <div className="form-field">
-        <label htmlFor="likes">Likes</label>
-        <input
+      </Form.Group>
+      <Form.Group controlId="formLikes">
+        <Form.Label>Likes</Form.Label>
+        <Form.Control
           type="number"
-          id="likes"
-          name="likes"
           value={likes}
-          onChange={(e) => handleFieldChange(e, "likes")}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e, "likes")}
         />
+      </Form.Group>
+      <div className="form-buttons d-flex container">
+        <Button className="col-xs-6 m-2" variant="primary" type="submit">
+          Add Blog
+        </Button>
+        <Button className="col-xs-6 m-2" variant="primary" onClick={() => toggleVisibility()}>Cancel</Button>
       </div>
-      <button className="btn-add" type="submit">
-        Add blog
-      </button>
-    </form>
+    </Form>
   );
 };
 

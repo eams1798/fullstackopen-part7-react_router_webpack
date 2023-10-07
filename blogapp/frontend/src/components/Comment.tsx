@@ -13,30 +13,28 @@ interface ICommentProps {
 const Comment = ({ blogId, comment, loginUser, commentUsers }: ICommentProps) => {
   if (!comment.user || commentUsers.length === 0) {
     return (
-      <li key={comment.id} className="comment">
-        <p>{comment.content}</p>
-      </li>
+      <div className="comment d-flex">
+        <p className="my-2">{comment.content}</p>
+      </div>
     );
   }
   if ( typeof comment.user !== "string") {
     return (
-      <li key={comment.id} className="comment">
-        <p>{comment.content}</p>
-        <b>Added by {comment.user?.name}</b>
+      <div className="comment d-flex align-items-center">
+        <p className="col-sm-8 col-md-10 my-2">{comment.content} <b>- Added by {comment.user?.name}</b></p>
         <DeleteCommentBtn blogId={blogId} comment={comment} loginUser={loginUser} />
-      </li>
+      </div>
     );
   }
   const user = commentUsers.find((user) => user.id === comment.user);
   return (
-    <li key={comment.id} className="comment">
-      <p>{comment.content}</p>
-      <b>Added by {user!.name}</b>
+    <div className="comment d-flex align-items-center">
+      <p className="col-sm-8 col-md-10 my-2">{comment.content} <b>- Added by {user!.name}</b></p>
       <DeleteCommentBtn blogId={blogId} comment={{
         ...comment,
         user
       }} loginUser={loginUser} />
-    </li>
+    </div>
   );
 };
 

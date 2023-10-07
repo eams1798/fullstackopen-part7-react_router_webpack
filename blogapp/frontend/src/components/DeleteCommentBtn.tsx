@@ -4,6 +4,7 @@ import { deleteComment } from "../reducers/blogs";
 import { IComment } from "../interfaces/comment";
 import { loginResponse } from "../interfaces/login";
 import { IUser } from "../interfaces/user";
+import { Button } from "react-bootstrap";
 
 interface IBlogProps {
   blogId: string;
@@ -31,9 +32,9 @@ const DeleteCommentBtn = ({ blogId, comment, loginUser }: IBlogProps) => {
     );
   }
   return (
-    <button className="btn-delete" onClick={() => void dispatch(deleteComment(comment))} >
+    <Button className="btn-deleteComment" variant="danger" onClick={() => void dispatch(deleteComment(comment))} >
       Delete
-    </button>
+    </Button>
   );
 };
 

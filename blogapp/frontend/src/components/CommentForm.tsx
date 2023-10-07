@@ -3,6 +3,7 @@ import { loginResponse } from "../interfaces/login";
 import { useDispatch } from "react-redux";
 import { AppThunkDispatch } from "../interfaces/reducers";
 import { createCommentInBlog } from "../reducers/blogs";
+import { Form, Button, InputGroup, FormControl, Row, Col } from "react-bootstrap";
 
 interface ICommentFormProps {
   blogId: string;
@@ -30,14 +31,37 @@ const CommentForm = ({ blogId, loginUser }: ICommentFormProps) => {
 
   const dispatch = useDispatch<AppThunkDispatch>();
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" placeholder="Enter your comment..." ref={contentRef}/>
-      {loginUser?
-        <input type="checkbox" ref={isAnonymousRef} name="anonymous" /> :
-        <input type="checkbox" ref={isAnonymousRef} name="anonymous" checked disabled />}
-      <label htmlFor="anonymous">Post as anonymous</label>
-      <button>Submit</button>
-    </form>
+    <Form onSubmit={handleSubmit} className="container">
+      <Row className="mb-3">
+        <Col>
+          <InputGroup>
+            <FormControl
+              placeholder="Enter your comment..."
+              aria-label="Comment"
+              aria-describedby="basic-addon2"
+              ref={contentRef}
+            />
+          </InputGroup>
+        </Col>
+      </Row>
+      <Row className="mb-3 row d-flex align-items-center">
+        <Col sm="8" md="10">
+          <Form.Group controlId="formBasicCheckbox">
+            <Form.Check
+              type="checkbox"
+              label="Post as anonymous"
+              ref={isAnonymousRef}
+              disabled={!loginUser}
+            />
+          </Form.Group>
+        </Col>
+        <Col sm="auto">
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Col>
+      </Row>
+    </Form>
   );
 };
 

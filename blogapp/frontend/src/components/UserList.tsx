@@ -1,3 +1,4 @@
+import { Table } from "react-bootstrap";
 import { IUser } from "../interfaces/user";
 import { Link } from "react-router-dom";
 
@@ -5,11 +6,12 @@ interface IUserListProps {
   users: IUser[];
 }
 
+
 const UserList = ({ users }: IUserListProps) => {
   return (
-    <div>
+    <div id="user-list">
       <h2>Users</h2>
-      <table>
+      <Table striped bordered hover responsive="md">
         <thead>
           <tr>
             <th></th>
@@ -19,14 +21,16 @@ const UserList = ({ users }: IUserListProps) => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <Link to={`/users/${user.id}`}>
-                <td>{user.name}</td>
-              </Link>
+              <td>
+                <Link to={`/users/${user.id}`}>
+                  {user.name}
+                </Link>
+              </td>
               <td>{user.blogs!.length}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };

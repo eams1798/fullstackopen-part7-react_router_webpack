@@ -1,5 +1,9 @@
 .blog {
-    border: 1px solid rgb(168, 173, 255);
+    background-color: #f5f6f6 !important;
+}
+
+/* .blog {
+    background-color: #dee2e6;
     margin: 1rem;
 }
 
@@ -19,4 +23,4 @@
 
 .blog-title-container, .blog-title {
     justify-content: space-between;
-}
+} */

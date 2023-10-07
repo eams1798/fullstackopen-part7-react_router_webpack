@@ -4,6 +4,8 @@ import { loginResponse } from "../interfaces/login";
 import { removeBlog } from "../reducers/blogs";
 import { useNavigate } from "react-router-dom";
 import { AppThunkDispatch } from "../interfaces/reducers";
+import { Button } from "react-bootstrap";
+import "./styles/DeleteBlogBtn.css";
 
 interface IBlogProps {
   blog: IBlog;
@@ -26,9 +28,9 @@ const DeleteBlogBtn = ({ blog, loginUser }: IBlogProps) => {
     );
   }
   return (
-    <button className="btn-delete" onClick={() => void remove()}>
+    <Button className="btn-deleteBlog m-2 col" variant="danger" onClick={() => void remove()}>
       Delete
-    </button>
+    </Button>
   );
 };
 
