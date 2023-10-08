@@ -1,6 +1,6 @@
 # BlogApp
 
-This repository contains the frontend code of a blog application developed with React and TypeScript as part of the Full Stack Open course. In this case, the choice to use TypeScript has been entirely my initiative to deepen my learning.
+This repository contains the code of a blog application developed with React and TypeScript as part of the Full Stack Open course. In this case, the choice to use TypeScript has been entirely my initiative to deepen my learning.
 The application allows registered users to create and share blog posts, as well as comment on existing posts anonymously or identified.
 
 ## Features
